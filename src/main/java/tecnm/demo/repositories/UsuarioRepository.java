@@ -2,6 +2,7 @@ package tecnm.demo.repositories;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import tecnm.demo.models.Usuario;
 import java.sql.ResultSet;
@@ -11,8 +12,12 @@ import java.util.List;
 @Repository
 public class UsuarioRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioRepository(JdbcTemplate jdbcTemplate) { this.jdbcTemplate = jdbcTemplate; }
+    public UsuarioRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<Usuario> findAll() {
         return jdbcTemplate.query("SELECT * FROM usuarios", new UsuarioRowMapper());
@@ -21,12 +26,23 @@ public class UsuarioRepository {
     public Usuario findById(Long id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM usuarios WHERE id = ?", new UsuarioRowMapper(), id);
-        } catch (Exception e) { return null; }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Usuario findByEmail(String email) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM usuarios WHERE email = ?", new UsuarioRowMapper(), email);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void save(Usuario u) {
         String sql = "INSERT INTO usuarios (nombre, email, telefono, sexo, fecha_nacimiento, contrasena, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        jdbcTemplate.update(sql, u.nombre, u.email, u.telefono, u.sexo, u.fechaNacimiento, u.contrasena);
+        String hashed = passwordEncoder.encode(u.contrasena);
+        jdbcTemplate.update(sql, u.nombre, u.email, u.telefono, u.sexo, u.fechaNacimiento, hashed);
     }
 
     

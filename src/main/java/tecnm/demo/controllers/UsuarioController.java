@@ -5,6 +5,7 @@ import tecnm.demo.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,13 +23,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public String crear(@RequestBody Usuario u) {
+    public String crear(@Valid @RequestBody Usuario u) {
         repo.save(u);
         return "Usuario creado";
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Long id, @RequestBody Usuario u) {
+    public ResponseEntity<String> actualizar(@PathVariable Long id, @Valid @RequestBody Usuario u) {
         return (repo.update(id, u) > 0) ? ResponseEntity.ok("Usuario actualizado") : ResponseEntity.notFound().build();
     }
 
