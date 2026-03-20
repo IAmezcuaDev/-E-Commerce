@@ -62,8 +62,8 @@ Endpoint crítico que transforma el carrito activo de un usuario en un pedido fo
 
 1. Clonar el repositorio:
 ```bash
-git clone https://github.com/IAmezcuaDev/tecnm-backend-apii.git
-cd tecnm-backend-apii
+git clone https://github.com/IAmezcuaDev/-E-Commerce.git
+cd \-E-Commerce
 ```
 2. Configurar credenciales de BD en `src/main/resources/application.properties`:
 ```properties
